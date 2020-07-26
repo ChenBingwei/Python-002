@@ -23,12 +23,14 @@ def get_movies_info(url: str, headers: dict, cookies: dict, params: tuple) -> li
     # Traverse to get movie name, movie type and release time
     movie_nums = 0
     for tag in bs_info.find_all('div', attrs={'class': 'movie-hover-info'}):
+        # Movie details can be obtained directly on the first page
         movie_name = tag.find('span', attrs={'class': 'name'}).text
         release_time = re.sub(r'[^\w-]', '',
                               tag.find('div', attrs={'class': 'movie-hover-brief'}).contents[2])
         movie_type = re.sub(r'[^\w／]', '',
                             tag.find_all('div', attrs={'class': 'movie-hover-title'})[1].contents[2])
 
+        # Only take up to 10 movies
         movie_nums += 1
         movies_list.append((movie_nums, movie_name, movie_type, release_time))
         if movie_nums >= 10:
