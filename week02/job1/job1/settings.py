@@ -12,7 +12,6 @@ BOT_NAME = 'job1'
 SPIDER_MODULES = ['job1.spiders']
 NEWSPIDER_MODULE = 'job1.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 ' \
              '(KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'
@@ -36,6 +35,22 @@ DEFAULT_REQUEST_HEADERS = {
     'Referer': 'https://passport.meituan.com/account/secondverify?response_code=eefe3221070446419d4ee2a8d2c273e5'
                '&request_code=177189ef4ab84626a820318623825a28',
     'Accept-Language': 'zh-CN,zh;q=0.9',
+}
+
+COOKIES = {
+    '__mta': '247430459.1595344111315.1595730288881.1595731455201.31',
+    'uuid_n_v': 'v1',
+    'uuid': '094DC040CB6411EA8A8375094482DFA4D0297F2A867F4419A03E2C61639BE876',
+    'mojo-uuid': 'bfd678e2d91dd41560a8f1276904bfc8',
+    '_lxsdk_cuid': '17371eb4681c8-0c283695860a77-31617402-13c680-17371eb4681c8',
+    '_lxsdk': '094DC040CB6411EA8A8375094482DFA4D0297F2A867F4419A03E2C61639BE876',
+    '_csrf': '23fc3bdfb0ef760942d493b14362cbb48e95303219d30ccf1dee412d00f51a0c',
+    '_lx_utm': 'utm_source%3Dgoogle%26utm_medium%3Dorganic',
+    'Hm_lvt_703e94591e87be68cc8da0da7cbd0be2': '1595730279,1595738375,1596337856,1596350074',
+    'mojo-session-id': '{"id":"847bd0a672be5499e331b9791f1c6ca9","time":1596376220673}',
+    'Hm_lpvt_703e94591e87be68cc8da0da7cbd0be2': '1596376354',
+    'mojo-trace-id': '15',
+    '_lxsdk_s': '173af70045c-fef-c0-ff5%7C%7C24',
 }
 
 # Enable or disable downloader middlewares

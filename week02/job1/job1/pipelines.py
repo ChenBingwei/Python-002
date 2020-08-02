@@ -10,17 +10,32 @@ import os
 import pandas as pd
 import pymysql
 
-from job1.common import constants
-
 
 class Job1PipelineToMysql:
+    SQL_CREATE_TABLE = """
+    CREATE TABLE IF NOT EXISTS `maoyan_movies`(
+       `id` INT UNSIGNED AUTO_INCREMENT,
+       `movie_name` VARCHAR(255) NOT NULL,
+       `movie_type` VARCHAR(255) NOT NULL,
+       `movie_rank` VARCHAR(255) NOT NULL,
+       `movie_time` VARCHAR(255) NOT NULL,
+       PRIMARY KEY (`id`)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    """
+    SQL_INIT_TABLE = "DELETE FROM maoyan_movies"
+    SQL_INSERT = """
+    INSERT INTO maoyan_movies
+    (`movie_name`, `movie_type`, `movie_rank`, `movie_time`)
+    VALUES 
+    ('{}', '{}', '{}', '{}');
+    """
 
     def process_item(self, item, spider):
 
         try:
             db_cur = self.db_conn.cursor()
             db_cur.execute(
-                constants.SQL_INSERT.format(
+                self.SQL_INSERT.format(
                     item['movie_name'],
                     item['movie_type'],
                     item['movie_rank'],
@@ -39,8 +54,8 @@ class Job1PipelineToMysql:
         self.db_conn = pymysql.connect(**mysql_settings)
         db_cur = self.db_conn.cursor()
         try:
-            db_cur.execute(constants.SQL_CREATE_TABLE)
-            db_cur.execute(constants.SQL_INIT_TABLE)
+            db_cur.execute(self.SQL_CREATE_TABLE)
+            db_cur.execute(self.SQL_INIT_TABLE)
             db_cur.close()
         except:
             self.db_conn.rollback()
@@ -51,6 +66,10 @@ class Job1PipelineToMysql:
 
 
 class Job1PipelineToCsv:
+    OUTPUT_PATH = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'output/job2_output_maoyan_top10.csv'
+    )
 
     def process_item(self, item, spider):
         movie_info = (
@@ -60,23 +79,23 @@ class Job1PipelineToCsv:
             item['movie_time'],
         )
         pd_info = pd.DataFrame(data=[movie_info])
-        if not os.path.exists(constants.OUTPUT_PATH):
+        if not os.path.exists(self.OUTPUT_PATH):
             # Add the first line of content when writing for the first time
-            pd_info.to_csv(constants.OUTPUT_PATH, encoding='utf8', index=False,
+            pd_info.to_csv(self.OUTPUT_PATH, encoding='utf8', index=False,
                            header=['排名', '电影名称', '电影类型', '上映时间'])
         else:
-            pd_info.to_csv(constants.OUTPUT_PATH, encoding='utf8', mode='a',
+            pd_info.to_csv(self.OUTPUT_PATH, encoding='utf8', mode='a',
                            index=False, header=False)
 
         return item
 
     def open_spider(self, spider):
         # When the spider starts, delete the previous output file
-        if os.path.exists(constants.OUTPUT_PATH):
-            os.remove(constants.OUTPUT_PATH)
+        if os.path.exists(self.OUTPUT_PATH):
+            os.remove(self.OUTPUT_PATH)
 
     def close_spider(self, spider):
         # Before the spider ends, sort the output files according to the ranking
-        if os.path.exists(constants.OUTPUT_PATH):
-            sourted_csv = pd.read_csv(constants.OUTPUT_PATH, index_col='排名', parse_dates=True).sort_index()
-            sourted_csv.to_csv(constants.OUTPUT_PATH)
+        if os.path.exists(self.OUTPUT_PATH):
+            sourted_csv = pd.read_csv(self.OUTPUT_PATH, index_col='排名', parse_dates=True).sort_index()
+            sourted_csv.to_csv(self.OUTPUT_PATH)

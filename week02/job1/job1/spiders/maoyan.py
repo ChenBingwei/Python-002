@@ -3,7 +3,6 @@ from scrapy.selector import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TCPTimedOutError
 
-from job1.common import constants
 from job1.items import Job1Item
 
 
@@ -11,8 +10,6 @@ class MaoyanSpider(scrapy.Spider):
     name = 'maoyan'
     allowed_domains = ['maoyan.com']
     start_urls = ['https://maoyan.com/films?showType=3']
-    # To test failure
-    # start_urls = ['https://maoyan.com/cvdddddadfdfadfsdfdsfilms?showType=3']
 
     def start_requests(self):
         """
@@ -21,7 +18,7 @@ class MaoyanSpider(scrapy.Spider):
         """
         for url in self.start_urls:
             yield scrapy.Request(url=url,
-                                 cookies=constants.COOKIES,
+                                 cookies=self.settings.get('COOKIES'),
                                  callback=self.parse,
                                  errback=self.parse_err)
 
