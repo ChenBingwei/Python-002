@@ -1,12 +1,32 @@
 # 学习笔记
 
+### 进程和线程？
+
+进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程
+
+### 阻塞与非阻塞？同步和异步？
+
+阻塞和非阻塞是针对请求发起方的概念。
+
+同步和异步是描述请求接收方的概念。
+
+### 协程
+
+多进程和多线程的调度均是由操作系统来控制，若用户需要参与其中，则需要使用到协程。
+
+### 并行和并发
+
+![preview](https://pic3.zhimg.com/v2-674f0d37fca4fac1bd2df28a2b78e633_r.jpg?source=1940ef5c)
+
+主要是看程序能不能同时被cpu执行。
+
 ## 多进程
 
 产生新的进程常用`os.fork()`或者`multiprocessing.Process()`
 
 ### 创建进程
 
-#### os.fork()
+os.fork()
 
 可以使用`os.fork()`来创建，如下：
 
@@ -21,7 +41,7 @@ print('111')
 
 父进程和新建的子进程都会运行`print('111')`，可通过返回值来判断父子进程关系，`os.fork()`函数返回值为0表示子进程，否则为对应父进程，可通过`os.getpid()`和`os.getppid()`来获取当前进程和其父进程的进程id。
 
-#### multiprocessing.Process()
+multiprocessing.Process()
 
 ```Python
 from multiprocessing imort Process
@@ -113,7 +133,7 @@ num = Value('d', 0.0)
 arr = Array('i', range(10))
 ```
 
-## 锁
+### 锁
 
 安全的进程和线程，指的是线程和进程的表现和它最终期望的结果是一致的。队列就是进程安全的。
 
@@ -125,5 +145,114 @@ l.acquire() # 锁住
 for _ in range(5):
   pass
 l.release() # 释放
+```
+
+### 进程池
+
+进程池常用于批量创建大量的子进程
+
+```python
+from multiprocessing.pool import Pool
+
+...
+
+p = Pool(4) # 可规定进程数量
+for i in ...:
+	p.apply_async(function_object, args=(i,))
+
+# 如果我们用的是进程池，在调用join()之前必须要先close()或者是terminate()，
+# 并且在close()之后不能再继续往进程池添加新的进程
+p.close()
+# 进程池对象调用join，会等待进程池中所有的子进程结束完毕再去结束父进程
+p.join()
+# 立即终止
+p.terminate()
+
+# 可通过map，它会使进程阻塞直到返回结果。
+p.map(func, iterable[, chunksize=None]) # 返回列表
+p.imap(func, iterable[, chunksize=None]g) # 返回迭代器
+```
+
+## 多线程
+
+### 创建线程
+
+```python
+# 使用函数创建多线程模型
+threading.Thread(target=run, args=("thread 1",))
+# 使用类创建多线程模型
+class MyThread(threading.Thread)
+```
+
+threading模块
+
+```python 
+import threading
+
+thread1 = threading.Thread(target=func)
+thread1.isalive() # 判断线程是否在运行 返回bool
+thread1.getName() # 获取线程名
+thread1.join() # 阻塞
+```
+
+### 线程锁
+
+```python
+import threading
+
+# 普通锁
+mutex1 = threading.Lock() # 不支持嵌套，会导致死锁
+mutex2 = threading.RLock() # 支持嵌套
+# 条件锁
+c = threading.Condition() # 该机制会使线程等待，只有满足某条件时，才释放n个线程
+# 信号量
+semaphore = threading.BoundedSemaphore(5)  # 最多允许5个线程同时运行
+# 事件
+event = threading.Event()
+event.clear() # 主动将状态设置为红灯
+event.set() # 主动将状态设置为绿灯
+# 定时器
+timer = threading.Timer
+```
+
+### 队列
+
+```python
+import queue
+
+q = queue.Queue(5)
+q.put()
+q.get()
+q.task_done()     # 每次从queue中get一个数据之后，当处理好相关问题，最后调用该方法，以提示q.join()是否停止阻塞，让线程继续执行或者退出
+q.qsize() # 队列中元素的个数，队列的大小
+q.empty() # -> bool
+q.full() # -> bool
+
+q2 = queue.PriorityQueue()
+# 每个元素都是元组
+# 数字越小优先级越高
+# 同优先级先进先出
+q.put((1,"work"))
+
+# queue.LifoQueue 后进先出队列,类似堆栈
+# q.deque 双向队列
+```
+
+### 线程池
+
+```python
+# 一般线程池
+from multiprocessing.dummy import Pool as ThreadPool
+# 并行任务的高级封装
+from concurrent.futures import ThreadPoolExecutor
+
+pool = ThreadPool(4)
+results = pool.map(requests.get, urls)
+
+with ThreadPoolExecutor(3) as executor:
+    executor.submit(func, seed) # 原样传递seed参数
+
+with ThreadPoolExecutor(3) as executor2:
+    executor2.map(func, seed)
 ```
 
