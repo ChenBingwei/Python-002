@@ -160,9 +160,9 @@ class CrawlThread(threading.Thread):
         self.queue = queue
 
     def run(self):
-        print(f'开始爬虫线程：{self.thread_id}')
+        print(f'开始爬虫线程：{self.thread_id} pid:{os.getpid()}')
         self.scheduler()
-        print(f'结束爬虫线程：{self.thread_id}')
+        print(f'结束爬虫线程：{self.thread_id} pid:{os.getpid()}')
 
     # 模拟任务调度
     def scheduler(self):
@@ -195,7 +195,7 @@ class ParserThread(threading.Thread):
         self.db_api = db_api
 
     def run(self):
-        print(f'启动分析线程：{self.thread_id}')
+        print(f'启动分析线程：{self.thread_id} pid:{os.getpid()}')
         while not flag:
             try:
                 item = self.queue.get(False)
@@ -205,7 +205,7 @@ class ParserThread(threading.Thread):
                 self.queue.task_done()
             except Exception as e:
                 pass
-        print(f'结束分析线程：{self.thread_id}')
+        print(f'结束分析线程：{self.thread_id} pid:{os.getpid()}')
 
     def parse_data(self, item):
         '''
@@ -258,8 +258,6 @@ def start_scrawler(city):
     for page in range(1, 11):
         pageQueue.put(page)
 
-    print("创建多线程")
-
     # 爬虫线程
     crawl_threads = []
     crawl_name_list = ['crawl_1', 'crawl_2', 'crawl_3']
@@ -287,7 +285,6 @@ def start_scrawler(city):
         t.join()
     db_connect_in_process.close()
 
-    print('退出主线程')
     print('进程 %s 结束' % os.getpid())
 
 
