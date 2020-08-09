@@ -14,6 +14,15 @@ from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Lock as ProcLock
 from multiprocessing import Manager
 from threading import Lock as ThreadLock
+"""
+说明：
+1、可通过python host_scanner.py -h 查看命令行帮助；
+2、一下是四个执行样例：
+python host_scanner.py ping -n 5 -m proc -ip 10.127.10.192-10.127.10.200 -v -w
+python host_scanner.py ping -n 5 -m thread -ip 10.127.10.192-10.127.10.200 -v -w
+python host_scanner.py tcp -n 5 -m thread -ip 10.127.10.192 -p 30-1024 -v -w
+python host_scanner.py tcp -n 5 -m proc -ip 10.127.10.192 -p 30-1024 -v -w
+"""
 
 WRITE_LOCK_PROC = ProcLock()
 WRITE_LOCK_THREAD = ThreadLock()
@@ -61,7 +70,7 @@ class HostScanner:
         self.json_file = json_file
 
         self._PoolExecutor = ThreadPoolExecutor if self.method == 'thread' else ProcessPoolExecutor
-        self.que = Manager().Queue(1)
+        self.que = Manager().Queue(10)
 
     def _update_json_file(self):
         if self._verbose:
@@ -221,6 +230,7 @@ class ScannerShell:
         args = parser.parse_args(argv)
         input_fields = dict((k, v) for (k, v) in vars(args).items())
         fields = self._args_handle_and_check(input_fields)
+
         scanner_executor = HostScanner(**fields)
         scanner_executor.run()
 
@@ -240,8 +250,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # ./host_scanner.py ping -n 5 -m proc -ip 10.127.10.192-10.127.10.200 -v -w
-    # ./host_scanner.py ping -n 5 -m thread -ip 10.127.10.192-10.127.10.200 -v -w
-    # ./host_scanner.py tcp -n 5 -m thread -ip 10.127.10.192 -p 30-1024 -v -w
-    # ./host_scanner.py tcp -n 5 -m proc -ip 10.127.10.192 -p 30-1024 -v -w
+
     main()
