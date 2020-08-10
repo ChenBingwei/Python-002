@@ -18,10 +18,10 @@ from threading import Lock as ThreadLock
 说明：
 1、可通过python host_scanner.py -h 查看命令行帮助；
 2、一下是四个执行样例：
-python host_scanner.py ping -n 5 -m proc -ip 10.127.10.192-10.127.10.200 -v -w
-python host_scanner.py ping -n 5 -m thread -ip 10.127.10.192-10.127.10.200 -v -w
-python host_scanner.py tcp -n 5 -m thread -ip 10.127.10.192 -p 30-1024 -v -w
-python host_scanner.py tcp -n 5 -m proc -ip 10.127.10.192 -p 30-1024 -v -w
+./host_scanner.py ping -n 5 -m proc -ip 10.127.10.192-10.127.10.200 -v -w
+./host_scanner.py ping -n 5 -m thread -ip 10.127.10.192-10.127.10.200 -v -w
+./host_scanner.py tcp -n 5 -m thread -ip 10.127.10.192 -p 30-1024 -v -w
+./host_scanner.py tcp -n 5 -m proc -ip 10.127.10.192 -p 30-1024 -v -w
 """
 
 WRITE_LOCK_PROC = ProcLock()
