@@ -24,8 +24,10 @@ headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
     'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/85.0.4183.83 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,'
+              'application/signed-exchange;v=b3;q=0.9',
     'Sec-Fetch-Site': 'same-origin',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-User': '?1',
