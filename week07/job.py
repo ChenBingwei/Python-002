@@ -48,7 +48,7 @@ class Cat(Animal):
         self._barking = '未知'
 
     def show_animal_info(self):
-        print(f'Cat: {self.__dict__}')
+        print(f'{self.SPECIES}: {self.__dict__}')
 
     def is_for_pet(self):
         return False if self.is_fierce else True
@@ -67,12 +67,6 @@ class Cat(Animal):
 
 class Dog(Cat):
     SPECIES = 'DOG'
-
-    def show_animal_info(self):
-        print(f'Dog: {self.__dict__}')
-
-    def get_species(self):
-        return self.SPECIES
 
 
 class Zoo(object):
