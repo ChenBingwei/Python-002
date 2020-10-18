@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <title>什么值得买 洗发水 top10</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery.slim.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">首页</a>
+    <form class="form-inline">
+        <input class="form-control mr-sm-2" name="q" type="search" placeholder="全局搜索">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">全局搜索</button>
+    </form>
+</nav>
+<div class="container">
+    <h3 class="mt-5 mb-3">什么值得买：洗发水</h3>
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">排名</th>
+            <th scope="col">名称</th>
+            <th scope="col">评价</th>
+            <th scope="col" class="text-nowrap">评分</th>
+            <th scope="col">收录时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in shampoo_objects %}
+        <tr>
+            <th>{{ object.shampoo_rank }}</th>
+            <th>{{ object.shampoo_name }}</th>
+            <th>{{ object.shampoo_comments }}</th>
+            <th>{{ object.shampoo_evaluate }}</th>
+            <td class="text-nowrap">{{ object.created_time }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
